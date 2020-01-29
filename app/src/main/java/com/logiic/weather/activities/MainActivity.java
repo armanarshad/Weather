@@ -1,9 +1,11 @@
 package com.logiic.weather.activities;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -20,7 +22,7 @@ import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity implements TextWatcher {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private AccuWeather accuWeather = new AccuWeather();
     private ArrayAdapter<String> adapter;
@@ -42,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 LocationService.MY_PERMISSION_ACCESS_COURSE_LOCATION);
         } else {
-            //
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -67,4 +70,11 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     private void retrieveData(Editable s) {
         suggestions = accuWeather.getSuggestions(String.valueOf(s));
     }
+
+    public void Confirm(View view) {
+        Intent intent = new Intent(this, WeatherActivity.class);
+        intent.putExtra("location", autoComplete.getEditableText().toString());
+        startActivity(intent);
+    }
+
 }

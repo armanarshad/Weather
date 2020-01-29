@@ -17,7 +17,7 @@ public abstract class LocationService implements LocationListener {
     private final static boolean FORCE_NETWORK = false;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
     private static final long MIN_TIME_BW_UPDATES = 0;
-    private static final String TAG = "LocationService";
+    private static final String TAG = LocationService.class.getSimpleName();
 
     public static final int MY_PERMISSION_ACCESS_COURSE_LOCATION = 0;
 
@@ -25,7 +25,7 @@ public abstract class LocationService implements LocationListener {
 
     private boolean isForceNetwork;
     private boolean isGPSEnabled;
-    private  boolean isNetworkEnabled;
+    private boolean isNetworkEnabled;
     private LocationManager locationManager;
     private boolean locationServiceAvailable;
 
@@ -33,7 +33,7 @@ public abstract class LocationService implements LocationListener {
     public double longitude;
     public double latitude;
 
-    private LocationService( Context context ) {
+    private LocationService(Context context) {
         initLocationService(context);
     }
 
@@ -61,15 +61,15 @@ public abstract class LocationService implements LocationListener {
     }
 
     /**
-    * Sets up location service after permissions is granted
-    */
+     * Sets up location service after permissions is granted
+     */
     @TargetApi(23)
     private void initLocationService(Context context) {
 
 
         if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission( context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
@@ -91,8 +91,8 @@ public abstract class LocationService implements LocationListener {
 
             if (isNetworkEnabled) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
@@ -100,14 +100,14 @@ public abstract class LocationService implements LocationListener {
 
             if (isGPSEnabled) {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
                 if (locationManager != null) {
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 }
             }
-        } catch (Exception ex)  {
+        } catch (Exception ex) {
             Log.d(TAG, "Error creating location service: " + ex.getMessage());
 
         }
