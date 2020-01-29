@@ -1,7 +1,5 @@
 package com.logiic.weather.api;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +15,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class AccuWeather {
 
-    private static final String TAG = "Database";
+    private static final String TAG = AccuWeather.class.getSimpleName();
 
     private JSONArray jsonArray;
     private Thread thread;
@@ -26,28 +24,28 @@ public class AccuWeather {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-            try {
-                URL url = new URL("https://www.accuweather.com/web-api/autocomplete?query=" + userInput + "&language=en-us");
-                HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-                connection.connect();
+                try {
+                    URL url = new URL("https://www.accuweather.com/web-api/autocomplete?query=" + userInput + "&language=en-us");
+                    HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+                    connection.connect();
 
-                InputStream inputStream = connection.getInputStream();
+                    InputStream inputStream = connection.getInputStream();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer stringBuffer = new StringBuffer();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuffer stringBuffer = new StringBuffer();
 
-                String line = "";
+                    String line = "";
 
-                while ((line = reader.readLine()) != null) {
-                    stringBuffer.append(line);
+                    while ((line = reader.readLine()) != null) {
+                        stringBuffer.append(line);
+                    }
+
+                    String json = stringBuffer.toString();
+                    jsonArray = new JSONArray(json);
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
                 }
-
-                String json = stringBuffer.toString();
-                jsonArray = new JSONArray(json);
-
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-            }
 
             }
         });
