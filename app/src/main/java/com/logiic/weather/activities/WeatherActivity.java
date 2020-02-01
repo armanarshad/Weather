@@ -1,105 +1,86 @@
 package com.logiic.weather.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.tabs.TabLayout;
 import com.logiic.weather.BuildConfig;
 import com.logiic.weather.R;
-import com.logiic.weather.api.RetrofitClient;
-import com.logiic.weather.models.darksky.Forecast;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.logiic.weather.adapter.SectionPagerAdapter;
+import com.logiic.weather.fragment.ForecastFragment;
+import com.logiic.weather.fragment.WeatherFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import androidx.viewpager.widget.ViewPager;
 
 public class WeatherActivity extends AppCompatActivity {
 
-    private static final String TAG = WeatherActivity.class.getSimpleName();
     private static final String API_KEY = BuildConfig.DARKSKY_API_KEY;
+    private static final String TAG = WeatherActivity.class.getSimpleName();
 
-    private double latitude;
-    private double longitude;
-    private TextView bottomSummary;
-    private TextView summary;
-    private TextView temp;
-    private TextView wind;
-    private TextView rain;
-
-    ProgressDialog dialog;
+    private SectionPagerAdapter sectionPagerAdapter;
+    TabLayout tabLayout;
+    private CharSequence title;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        dialog = new ProgressDialog(WeatherActivity.this);
-        dialog.setMessage("Loading..");
-        dialog.setTitle("Loading Data");
-        dialog.setIndeterminate(false);
-        dialog.setCancelable(true);
-        dialog.show();
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
 
-        temp = findViewById(R.id.temperature);
-        summary = findViewById(R.id.top_text);
-        wind = findViewById(R.id.wind);
-        bottomSummary = findViewById(R.id.bottom_text);
-        rain = findViewById(R.id.rain);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager(), this);
 
         Intent intent = getIntent();
         String[] location = intent.getStringExtra("location").split(",");
-        CharSequence title = location[0] + ", " + location[2];
-        getSupportActionBar().setTitle(title);
+        title = location[0] + ", " + location[2];
 
-        if (Geocoder.isPresent()) {
-            try {
-                String myLocaction = (String) title;
-                Geocoder gc = new Geocoder(this);
-                List<Address> addresses = gc.getFromLocationName(myLocaction, 5);
+        setTitle(title);
 
-                List<LatLng> ll = new ArrayList<LatLng>(addresses.size());
-                for (Address a : addresses) {
-                    if (a.hasLatitude() && a.hasLongitude()) {
-                        ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
-                        longitude = a.getLongitude();
-                        latitude = a.getLatitude();
-                    }
-                }
-            } catch (IOException e) {
-                //
-            }
-        }
+        sectionPagerAdapter.addFragment(new WeatherFragment(), "Weather", tabIcons[0]);
+        sectionPagerAdapter.addFragment(new ForecastFragment(), "Forecast", tabIcons[1]);
+        viewPager.setAdapter(sectionPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
-        Call<Forecast> currentWeather = RetrofitClient
-            .getInstance()
-            .getApi()
-            .getCurrentWeather(API_KEY, latitude, longitude);
+        highLightCurrentTab(0);
 
-        currentWeather.enqueue(new Callback<Forecast>() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onResponse(Call<Forecast> call, Response<Forecast> response) {
-                temp.setText(response.body().getCurrently().getTemperature().toLowerCase() + "\u00B0");
-                summary.setText("Today is " + response.body().getCurrently().getSummary());
-                wind.setText(String.valueOf(Math.round(response.body().getCurrently().getWindSpeed())));
-                rain.setText(String.valueOf(Math.round(response.body().getCurrently().getRain())));
-                bottomSummary.setText("Mostly " + response.body().getCurrently().getSummary().toLowerCase() + " today");
-
-                dialog.dismiss();
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-
             @Override
-            public void onFailure(Call<Forecast> call, Throwable t) {
-                //
+            public void onPageSelected(int position) {
+                highLightCurrentTab(position);
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
     }
+
+    private void highLightCurrentTab(int position) {
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            assert tab != null;
+            tab.setCustomView(null);
+            tab.setCustomView(sectionPagerAdapter.getTabView(i));
+        }
+
+        TabLayout.Tab tab = tabLayout.getTabAt(position);
+        assert tab != null;
+        tab.setCustomView(null);
+        tab.setCustomView(sectionPagerAdapter.getSelectedTabView(position));
+    }
+
+
+    public String getData() {
+        return (String) title;
+    }
+
+    private int[] tabIcons = {
+        R.drawable.weather,
+        R.drawable.forecast
+    };
 }
