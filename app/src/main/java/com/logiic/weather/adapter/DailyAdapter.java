@@ -1,0 +1,95 @@
+package com.logiic.weather.adapter;
+
+import android.content.Context;
+import android.os.Build;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.logiic.weather.R;
+import com.logiic.weather.models.darksky.Forecast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
+
+public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.viewHolder> {
+
+    private static final String TAG = DailyAdapter.class.getSimpleName();
+
+    Context context;
+    Forecast forecast;
+
+    public DailyAdapter(Context context, Forecast forecast) {
+        this.context = context;
+        this.forecast = forecast;
+    }
+
+    @Override
+    public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.data_weekly, parent, false);
+        viewHolder holder = new viewHolder(view);
+        return holder;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onBindViewHolder(@NonNull final viewHolder holder, final int position) {
+        holder.highestTemperature.setText(forecast.getDaily().getData().get(position).getHighestTemperature().toLowerCase() + "\u00B0");
+        holder.lowestTemperature.setText(forecast.getDaily().getData().get(position).getLowestTemperature().toLowerCase() + "\u00B0");
+        if (forecast.getDaily().getData().get(position).getIcon() != null) {
+            switch (forecast.getDaily().getData().get(position).getIcon()) {
+                case "rain":
+                    holder.icons.setImageResource(R.drawable.light_rain);
+                    break;
+                case "snow":
+                    holder.icons.setImageResource(R.drawable.snow);
+                    break;
+                case "wind":
+                    holder.icons.setImageResource(R.drawable.windy);
+                    break;
+                case "partly-cloudy-day":
+                    holder.icons.setImageResource(R.drawable.cloud);
+                    break;
+                case "cloudy":
+                    holder.icons.setImageResource(R.drawable.cloud);
+                    break;
+                case "clear-day":
+                    holder.icons.setImageResource(R.drawable.clear);
+                    break;
+                case "sleet":
+                    holder.icons.setImageResource(R.drawable.sleet);
+                    break;
+                case "fog":
+                    holder.icons.setImageResource(R.drawable.fog);
+                    break;
+            }
+        }
+        holder.condition.setText(forecast.getDaily().getData().get(position).getCondition());
+        holder.days.setText(forecast.getDaily().getData().get(position).getTime());
+    }
+
+    @Override
+    public int getItemCount() {
+        return 7;
+    }
+
+    class viewHolder extends RecyclerView.ViewHolder {
+        TextView days;
+        ImageView icons;
+        TextView condition;
+        TextView highestTemperature;
+        TextView lowestTemperature;
+
+        public viewHolder(@NonNull View itemView) {
+            super(itemView);
+            days = (TextView) itemView.findViewById(R.id.day_names);
+            icons = (ImageView) itemView.findViewById(R.id.condition_icon);
+            condition = (TextView) itemView.findViewById(R.id.condition);
+            highestTemperature = (TextView) itemView.findViewById(R.id.highest_temperature);
+            lowestTemperature = (TextView) itemView.findViewById(R.id.lowest_temperature);
+        }
+    }
+}

@@ -8,9 +8,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 
 import com.logiic.weather.R;
 import com.logiic.weather.api.AccuWeather;
+import com.logiic.weather.models.darksky.Forecast;
 import com.logiic.weather.services.LocationService;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     private ArrayAdapter<String> adapter;
     private AutoCompleteTextView autoComplete;
     private List<String> suggestions = new ArrayList<>();
+    private LinearLayout linearLayout;
+    private Forecast forecast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
             autoComplete = findViewById(R.id.auto_complete_country);
             autoComplete.addTextChangedListener(this);
         }
+
+
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -76,5 +82,4 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
         intent.putExtra("location", autoComplete.getEditableText().toString());
         startActivity(intent);
     }
-
 }
