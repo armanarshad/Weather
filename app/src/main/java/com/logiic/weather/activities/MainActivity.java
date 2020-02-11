@@ -1,6 +1,10 @@
 package com.logiic.weather.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,14 +12,14 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 
+import com.logiic.weather.NotificationReceiver;
 import com.logiic.weather.R;
 import com.logiic.weather.api.AccuWeather;
-import com.logiic.weather.models.darksky.Forecast;
 import com.logiic.weather.services.LocationService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,12 +34,13 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     private ArrayAdapter<String> adapter;
     private AutoCompleteTextView autoComplete;
     private List<String> suggestions = new ArrayList<>();
-    private LinearLayout linearLayout;
-    private Forecast forecast;
+    SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPref = getSharedPreferences("com.logiic.weather.preference", Context.MODE_PRIVATE);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
             setContentView(R.layout.activity_main);
@@ -44,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
             autoComplete.addTextChangedListener(this);
         }
 
-
-
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 LocationService.MY_PERMISSION_ACCESS_COURSE_LOCATION);
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
         }
+
     }
 
     @Override
@@ -78,8 +82,35 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
     }
 
     public void Confirm(View view) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("location", autoComplete.getEditableText().toString());
+        editor.commit();
         Intent intent = new Intent(this, WeatherActivity.class);
-        intent.putExtra("location", autoComplete.getEditableText().toString());
         startActivity(intent);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String location = sharedPref.getString("location", null);
+
+        if (sharedPref.getBoolean("notificationSwitch", true)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 6);
+            calendar.set(Calendar.MINUTE, 0);
+
+            Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+            PendingIntent penddingIntent = PendingIntent.getBroadcast(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, penddingIntent);
+        } else {
+            //
+        }
+
+        if (location != null) {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+        }
+    }
+
 }

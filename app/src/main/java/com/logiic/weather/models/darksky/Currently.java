@@ -51,9 +51,13 @@ public class Currently {
         this.icon = icon;
     }
 
-    public String getTemperature() {
+    public String getCelsius() {
         double temp = Double.parseDouble(temperature);
         return String.valueOf(Math.round(((temp - 32) * 5) / 9));
+    }
+
+    public String getFahrenheit() {
+        return String.valueOf(Math.round(Float.parseFloat(temperature)));
     }
 
     public void setTemperature(String temperature) {
@@ -68,9 +72,16 @@ public class Currently {
         this.humidity = humidity;
     }
 
-    public double getWindSpeed() {
+    public double getWindMPH() {
         return windSpeed;
     }
+
+    public double getWindKPH() {
+        double temp = windSpeed * 1.61;
+        return temp;
+    }
+
+
 
     public void setWindSpeed(double windSpeed) {
         this.windSpeed = windSpeed;

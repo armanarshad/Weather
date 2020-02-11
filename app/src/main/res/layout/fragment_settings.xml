@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:text="App settings"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <Switch
+        android:id="@+id/settings_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="20dp"
+        android:text="On-going weather notifications"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings_notifications"
+        android:layout_margin="20dp">
+
+        <Switch
+            android:id="@+id/settings_measure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Units of measure"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/settings_measure_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settings_measure"
+            android:text="Metric (\u2109/KMH)"/>
+
+    </RelativeLayout>
+    
+</RelativeLayout>

@@ -1,33 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/weather"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".activities.WeatherActivity">
 
-    <TextView
-        android:id="@+id/temperature"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@id/temperature_data"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:textAlignment="center"
-        android:textSize="130sp"/>
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="130sp"/>
+
+        <TextView
+            android:id="@+id/unicode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\u2103"
+            android:textColor="@color/white"
+            android:textSize="60sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/temperature"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/top_text"
         android:layout_width="match_parent"
+        android:text="Today is clear"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/temperature"
+        android:layout_below="@+id/temperature_data"
+        android:textColor="@color/white"
         android:textAlignment="center"
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/temperature_data"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/bottom_text"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_text">
 
         <include layout="@layout/data_weather"/>
 
@@ -35,11 +64,13 @@
 
     <TextView
         android:id="@+id/bottom_text"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
         android:textAlignment="center"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

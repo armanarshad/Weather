@@ -45,11 +45,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/right_data"
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/day_names"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp">
 
         <TextView

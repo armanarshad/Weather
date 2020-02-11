@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.logiic.weather.BuildConfig;
-import com.logiic.weather.adapter.DailyAdapter;
-import com.logiic.weather.adapter.HourlyAdapter;
 import com.logiic.weather.R;
 import com.logiic.weather.activities.WeatherActivity;
+import com.logiic.weather.adapter.DailyAdapter;
+import com.logiic.weather.adapter.HourlyAdapter;
 import com.logiic.weather.api.RetrofitClient;
 import com.logiic.weather.models.darksky.Forecast;
 
