@@ -1,6 +1,7 @@
 package com.logiic.weather.activities;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
@@ -8,6 +9,7 @@ import com.logiic.weather.BuildConfig;
 import com.logiic.weather.R;
 import com.logiic.weather.adapter.SectionPagerAdapter;
 import com.logiic.weather.fragment.ForecastFragment;
+import com.logiic.weather.fragment.SettingsFragment;
 import com.logiic.weather.fragment.WeatherFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,25 +24,28 @@ public class WeatherActivity extends AppCompatActivity {
     TabLayout tabLayout;
     private CharSequence title;
     private ViewPager viewPager;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
+        sharedPreferences = getSharedPreferences("com.logiic.weather.preference", Context.MODE_PRIVATE);
+
         viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         sectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager(), this);
 
-        Intent intent = getIntent();
-        String[] location = intent.getStringExtra("location").split(",");
+        String[] location = sharedPreferences.getString("location", null).split(",");
         title = location[0] + ", " + location[2];
 
         setTitle(title);
 
         sectionPagerAdapter.addFragment(new WeatherFragment(), "Weather", tabIcons[0]);
         sectionPagerAdapter.addFragment(new ForecastFragment(), "Forecast", tabIcons[1]);
+        sectionPagerAdapter.addFragment(new SettingsFragment(), "Settings", tabIcons[2]);
         viewPager.setAdapter(sectionPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -81,6 +86,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private int[] tabIcons = {
         R.drawable.weather,
-        R.drawable.forecast
+        R.drawable.forecast,
+        R.drawable.settings
     };
+
 }

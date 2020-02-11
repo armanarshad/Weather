@@ -1,6 +1,8 @@
 package com.logiic.weather.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import com.logiic.weather.R;
 import com.logiic.weather.models.darksky.Forecast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.viewHolder>{
@@ -18,7 +21,8 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.viewHolder
     private static final String TAG = HourlyAdapter.class.getSimpleName();
 
     private Context context;
-    Forecast forecast;
+    private Forecast forecast;
+    private SharedPreferences sharedPreferences;
 
     public HourlyAdapter(Context context, Forecast forecast) {
         this.context = context;
@@ -34,6 +38,13 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.viewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final viewHolder holder, final int position) {
+        sharedPreferences = context.getSharedPreferences("com.logiic.weather.preference", Context.MODE_PRIVATE);
+
+        if (sharedPreferences.getBoolean("unitsOfMeasure", false) == true) {
+            holder.temperature.setText(forecast.getHourly().getData().get(position).getCelsius().toLowerCase() + "\u00B0");
+        } else {
+            holder.temperature.setText(forecast.getHourly().getData().get(position).getFahrenheit().toLowerCase() + "\u2109");
+        }
         if (forecast.getHourly().getData().get(position).getIcon() != null) {
             switch (forecast.getHourly().getData().get(position).getIcon()) {
                 case "rain":
@@ -62,7 +73,7 @@ public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.viewHolder
                     break;
             }
         }
-        holder.temperature.setText(forecast.getHourly().getData().get(position).getTemperature().toLowerCase() + "\u00B0");
+        holder.hourlyIcon.setColorFilter(ContextCompat.getColor(context, R.color.black), PorterDuff.Mode.SRC_ATOP);
         holder.time.setText(forecast.getHourly().getData().get(position).getTimes());
     }
 

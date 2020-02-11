@@ -46,15 +46,24 @@ public class Data {
 
     public void setCondition(String condition) { this.condition = condition; }
 
-    public String getHighestTemperature() {
+    public String getHighestCelsius() {
         double temp = Double.parseDouble(highestTemperature);
-        return String.valueOf(Math.round(((temp - 32) * 5) / 9));}
+        return String.valueOf(Math.round(((temp - 32) * 5) / 9));
+    }
+
+    public String getHighestFahrenheit() {
+        return highestTemperature;
+    }
 
     public void setHighestTemperature(String highestTemperature) { this.highestTemperature = highestTemperature; }
 
-    public String getLowestTemperature() {
+    public String getLowestCelsius() {
         double temp = Double.parseDouble(lowestTemperature);
         return String.valueOf(Math.round(((temp - 32) * 5) / 9));
+    }
+
+    public String getLowestFahrenheit() {
+        return lowestTemperature;
     }
 
     public void setLowestTemperature(String lowestTemperature) { this.lowestTemperature = lowestTemperature; }
@@ -77,9 +86,13 @@ public class Data {
 
     public void setTime(long time) { this.time = time; }
 
-    public String getTemperature() {
+    public String getCelsius() {
         double temp = Double.parseDouble(temperature);
         return String.valueOf(Math.round(((temp - 32) * 5) / 9));
+    }
+
+    public String getFahrenheit() {
+        return temperature;
     }
 
     public void setTemperature(String temperature) { this.temperature = temperature; }

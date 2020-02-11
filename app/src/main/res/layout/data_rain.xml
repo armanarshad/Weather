@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/rain_icon"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
         android:src="@drawable/light_rain"
         app:layout_constraintBottom_toTopOf="@id/left_side_data"
         app:layout_constraintLeft_toRightOf="parent"
@@ -29,14 +29,16 @@
             android:id="@+id/rain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:textSize="50sp"/>
 
         <TextView
             android:id="@+id/percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/rain"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/rain"
+            android:textColor="@color/white"
             android:text="%"
             android:textSize="30sp"/>
     </RelativeLayout>

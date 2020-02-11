@@ -1,6 +1,8 @@
 package com.logiic.weather.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +15,16 @@ import com.logiic.weather.models.darksky.Forecast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.viewHolder> {
 
     private static final String TAG = DailyAdapter.class.getSimpleName();
 
-    Context context;
-    Forecast forecast;
+    private Context context;
+    private Forecast forecast;
+    private SharedPreferences sharedPreferences;
 
     public DailyAdapter(Context context, Forecast forecast) {
         this.context = context;
@@ -37,8 +41,15 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.viewHolder> 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onBindViewHolder(@NonNull final viewHolder holder, final int position) {
-        holder.highestTemperature.setText(forecast.getDaily().getData().get(position).getHighestTemperature().toLowerCase() + "\u00B0");
-        holder.lowestTemperature.setText(forecast.getDaily().getData().get(position).getLowestTemperature().toLowerCase() + "\u00B0");
+        sharedPreferences = context.getSharedPreferences("com.logiic.weather.preference", Context.MODE_PRIVATE);
+
+        if (sharedPreferences.getBoolean("unitsOfMeasure", false)) {
+            holder.highestTemperature.setText(forecast.getDaily().getData().get(position).getHighestCelsius().toLowerCase() + "\u00B0");
+            holder.lowestTemperature.setText(forecast.getDaily().getData().get(position).getLowestCelsius().toLowerCase() + "\u00B0");
+        } else {
+            holder.highestTemperature.setText(forecast.getDaily().getData().get(position).getHighestFahrenheit().toLowerCase() + "\u2109");
+            holder.lowestTemperature.setText(forecast.getDaily().getData().get(position).getLowestFahrenheit().toLowerCase() + "\u2109");
+        }
         if (forecast.getDaily().getData().get(position).getIcon() != null) {
             switch (forecast.getDaily().getData().get(position).getIcon()) {
                 case "rain":
@@ -67,6 +78,7 @@ public class DailyAdapter extends RecyclerView.Adapter<DailyAdapter.viewHolder> 
                     break;
             }
         }
+        holder.icons.setColorFilter(ContextCompat.getColor(context, R.color.black), PorterDuff.Mode.SRC_ATOP);
         holder.condition.setText(forecast.getDaily().getData().get(position).getCondition());
         holder.days.setText(forecast.getDaily().getData().get(position).getTime());
     }
